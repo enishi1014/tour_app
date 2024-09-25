@@ -1,12 +1,55 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>観光ガイドアプリ</title>
     <link href="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.css" rel="stylesheet" />
     <link rel="stylesheet" href="static\css\style.css">
-  </head>
-  <body>
-    <div id="map"></div>
-    <script src="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.js"></script>
-    <script src="static\js\map.js"></script>
-  </body>
+    
+</head>
+
+<body>
+
+    <header>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="logo">僧侶</div>
+        <div class="title">ガイド</div>
+    </header>
+
+    <main>
+        <div id="map"></div>        
+        <script src="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.js"></script>
+        <script src="static\js\map.js"></script>
+    </main>
+
+    <footer>
+        コメント
+    </footer>
+
+    <div id="menu" class="menu">
+        <a href="#">ログイン・ログアウト</a>
+        <a href="#">たまっているポイント: {{ temples.point }}</a>
+        <div id="stamp">
+            スタンプ一覧
+            {% for stamp in temples.stamps %}
+            <div class="stamp{% if loop.index == 1 %} active{% endif %}">{{ stamp }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+
+
+</body>
+
 </html>

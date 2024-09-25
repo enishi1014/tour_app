@@ -9,10 +9,10 @@ const map = new maplibregl.Map({
   zoom: 11,
 });
 
-// マップの移動可能範囲を設定（東京23区をカバーする範囲）
 const bounds = [
-  [139.5603, 35.5233], // 南西 (例: 練馬区)
-  [139.9086, 35.8185]  // 北東 (例: 江戸川区)
+  [139.5603, 35.5233], 
+  [139.9086, 35.8185]  
 ];
 map.setMaxBounds(bounds);
 map.addControl(new maplibregl.NavigationControl(), "top-left");
+
