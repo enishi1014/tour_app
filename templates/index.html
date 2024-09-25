@@ -79,15 +79,14 @@
         }
 
         .stamp {
-            display: none;
-            background-color: #333;
+            background-color: #555;
             color: white;
-            padding: 15px;
-            position: absolute;
-            top: 50px;
-            left: 0;
-            width: 200px;
-            z-index: 10;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        .stamp.active {
+            background-color: #f39c12;
         }
 
         .menu a {
@@ -149,7 +148,7 @@
     </header>
 
     <main>
-        <div class="map">地図</div>
+        <div class="map" id="map">地図</div>
     </main>
 
     <footer>
@@ -158,18 +157,12 @@
 
     <div id="menu" class="menu">
         <a href="#">ログイン・ログアウト</a>
-        <a href="#">たまっているポイント: {{ temples.point}}</a>
+        <a href="#">たまっているポイント: {{ temples.point }}</a>
         <div id="stamp">
-
-        </div>
-        <div id>
             スタンプ一覧
-            <div class="stamp active">1</div>
-            <div class="stamp">2</div>
-            <div class="stamp">3</div>
-            <div class="stamp">4</div>
-            <div class="stamp">5</div>
-            <div class="stamp">6</div>
+            {% for stamp in temples.stamps %}
+            <div class="stamp{% if loop.index == 1 %} active{% endif %}">{{ stamp }}</div>
+            {% endfor %}
         </div>
     </div>
 
@@ -183,7 +176,9 @@
             }
         }
     </script>
-
+    <!-- マップ表示用のJavaScript -->
+    <script src="https://unpkg.com/amazon-location-js/dist/index.js"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
 </body>
 
 </html>
