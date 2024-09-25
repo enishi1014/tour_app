@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>観光ガイドアプリ</title>
+    <!-- 外部CSSファイルの読み込み -->
+    <link rel="stylesheet" href="static/css/style.css">
+    <!-- MapLibre GL JSのCSS -->
     <link href="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.css" rel="stylesheet" />
-    <link rel="stylesheet" href="static\css\style.css">
-    
 </head>
 
 <body>
@@ -22,9 +24,14 @@
     </header>
 
     <main>
-        <div id="map"></div>        
-        <script src="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.js"></script>
-        <script src="static\js\map.js"></script>
+        <div id="map"></div>
+        <!-- モデルコースの選択メニュー -->
+        <div class="course-selector">
+            <label for="course-select">モデルコースを選択:</label>
+            <select id="course-select">
+                <option value="">コースを選択してください</option>
+            </select>
+        </div>
     </main>
 
     <footer>
@@ -42,6 +49,7 @@
         </div>
     </div>
 
+    <!-- ハンバーガーメニューのスクリプト -->
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');
@@ -49,6 +57,14 @@
         }
     </script>
 
+    <!-- AWS SDK for JavaScript（Cognitoを使用する場合） -->
+    <!-- <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1210.0.min.js"></script> -->
+
+    <!-- MapLibre GL JSのスクリプト -->
+    <script src="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.js"></script>
+
+    <!-- マップ表示用のJavaScriptファイル -->
+    <script src="static/js/map.js"></script>
 
 </body>
 
