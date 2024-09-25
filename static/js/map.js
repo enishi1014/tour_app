@@ -1,59 +1,18 @@
-// Amazon Location Serviceを使用してマップを表示
-document.addEventListener('DOMContentLoaded', function () {
-    // マップを初期化
-    var map = new maplibregl.Map({
-        container: 'map',
-        style: 'https://maps.geo.ap-northeast-1.amazonaws.com/maps/v0/maps/YourMapName/style-descriptor',
-        center: [139.6917, 35.6895], // 東京の中心座標
-        zoom: 12
-    });
+const apiKey = "v1.public.eyJqdGkiOiIzODVjMGU5OS00NDI4LTQyZmMtOTY4ZS02OWVkYjI1Y2QxMWEifSYNGsUw2rs7pgeRhhpCtTFHWZw3xQpY4QxGIiAIoC6Uz62F6Y1YRhJ08z9B1HG7tdcLApNZqeK-mpXFGZJ3mcNliJRh_TeIvp5Ci8BZIr_qD9NJUXHSEoPqDTKAWD72QAMjvDl31aOhpcLI-0g8K-JmP8Zhb01fjblMmHVWFU-VtrEpJ__1JYLGAd0W42gC-0kJmWXucvfx4qR41-cxCN21zYUAUL6TBfvy1qRrKCkyJsP_qHIbl3otPSs1C08jHtOiac35ryRc91JrBfq2IB6maFJ6yAnL-WWRgJjYniA4zaOYhI-MtBrm18VahqbFGSriZtNpbHTdyReCZSQGym4.ZTA2OTdiZTItNzgyYy00YWI5LWFmODQtZjdkYmJkODNkMmFh";
+const mapName = "mymap";
+const region = "ap-southeast-2";
 
-    // マップにマーカーを追加する例
-    fetch('/api/map_data')
-        .then(response => response.json())
-        .then(data => {
-            data.locations.forEach(function (location) {
-                new maplibregl.Marker()
-                    .setLngLat(location.coordinates)
-                    .setPopup(new maplibregl.Popup().setText(location.name))
-                    .addTo(map);
-            });
-        });
-
-    // ルート提案を表示する例
-    fetch('/api/routes')
-        .then(response => response.json())
-        .then(routes => {
-            var route = routes['default']; // デフォルトのルートを選択
-            drawRouteOnMap(route.coordinates);
-        });
-
-    function drawRouteOnMap(coordinates) {
-        // 既存のルートを削除
-        if (map.getSource('route')) {
-            map.removeLayer('route');
-            map.removeSource('route');
-        }
-        // 新しいルートを追加
-        map.addSource('route', {
-            'type': 'geojson',
-            'data': {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'LineString',
-                    'coordinates': coordinates
-                }
-            }
-        });
-        map.addLayer({
-            'id': 'route',
-            'type': 'line',
-            'source': 'route',
-            'layout': {},
-            'paint': {
-                'line-color': '#ff0000',
-                'line-width': 4
-            }
-        });
-    }
+const map = new maplibregl.Map({
+  container: "map",
+  style: `https://maps.geo.${region}.amazonaws.com/maps/v0/maps/${mapName}/style-descriptor?key=${apiKey}`,
+  center: [139.6917, 35.6895],
+  zoom: 11,
 });
+
+// マップの移動可能範囲を設定（東京23区をカバーする範囲）
+const bounds = [
+  [139.5603, 35.5233], // 南西 (例: 練馬区)
+  [139.9086, 35.8185]  // 北東 (例: 江戸川区)
+];
+map.setMaxBounds(bounds);
+map.addControl(new maplibregl.NavigationControl(), "top-left");
