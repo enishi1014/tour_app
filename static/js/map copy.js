@@ -12,11 +12,33 @@ document.addEventListener('DOMContentLoaded', function () {
     zoom: 11,
     });
 
-    const bounds = [
-    [139.5603, 35.5233], 
-    [139.9086, 35.8185]  
-    ];
-    map.setMaxBounds(bounds);
+
+        // 現在地を取得して表示する関数
+    function showCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userCoords = [position.coords.longitude, position.coords.latitude];
+                    console.log('現在地:', userCoords);
+    
+                    // 現在地にマーカーを追加
+                    new maplibregl.Marker({ color: "blue" })
+                        .setLngLat(userCoords)
+                        .setPopup(new maplibregl.Popup().setText('現在地'))
+                        .addTo(map);
+    
+                    // 地図の中心を現在地に移動
+                    map.setCenter(userCoords);
+                    map.setZoom(14);  // 現在地にズーム
+                }, error => {
+                    console.error('現在地を取得できませんでした:', error);
+                });
+            } else {
+                console.error('Geolocation APIがサポートされていません。');
+            }
+        }
+    
+        // ページ読み込み時に現在地を表示
+    showCurrentLocation();
    // モデルコースデータの読み込み
    fetch('static/data/model_courses.json')
    .then(response => response.json())

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function () {
     // マップ表示用のAPIキー
-    const mapApiKey = "v1.public.eyJqdGkiOiIzODVjMGU5OS00NDI4LTQyZmMtOTY4ZS02OWVkYjI1Y2QxMWEifSYNGsUw2rs7pgeRhhpCtTFHWZw3xQpY4QxGIiAIoC6Uz62F6Y1YRhJ08z9B1HG7tdcLApNZqeK-mpXFGZJ3mcNliJRh_TeIvp5Ci8BZIr_qD9NJUXHSEoPqDTKAWD72QAMjvDl31aOhpcLI-0g8K-JmP8Zhb01fjblMmHVWFU-VtrEpJ__1JYLGAd0W42gC-0kJmWXucvfx4qR41-cxCN21zYUAUL6TBfvy1qRrKCkyJsP_qHIbl3otPSs1C08jHtOiac35ryRc91JrBfq2IB6maFJ6yAnL-WWRgJjYniA4zaOYhI-MtBrm18VahqbFGSriZtNpbHTdyReCZSQGym4.ZTA2OTdiZTItNzgyYy00YWI5LWFmODQtZjdkYmJkODNkMmFh"; // マップ用のAPIキーに置き換える
+    const mapApiKey = "v1.public.eyJqdGkiOiIyYWQwZjQyZC0yMGYwLTQ4YjMtYjUzZi0xOGExOTNkYmUyMjgifU6af6Qz2TVFmHlhyA7gUEva5beeXEdF9d4qG_AGhh8qDtsswJARPgkK3M2MyPIaBBXOBsyeb0dbQkVqZrLRawRv7f_X_Wopago5eD85jDLG47Z-4BJScO95XkpWO5MwtN26mHIl0G-QaktNy8rs9tVpGxKeoqycjmJ_6FN6nU_PpTSatGpkWto4GLH1oLv3wZw_cRw3HgM9z7YsDy02-TQz9q3TRrAIKLIpRdpwvkKDtkubn-eFw1a9yrPXTuNmgjaTkCtQGekQkGZfkVNMy0J6KRSzzQBSx7WGvpjxJI2uE7sJap94BwvSYbM_9SLKzvP6rQr6_mLuIc50lzE24xI.ZTA2OTdiZTItNzgyYy00YWI5LWFmODQtZjdkYmJkODNkMmFh"; // マップ用のAPIキーに置き換える
     const mapName = "mymap";
     const mapRegion = "ap-southeast-2";
 
@@ -16,12 +16,33 @@ document.addEventListener('DOMContentLoaded', async function () {
         center: [139.6917, 35.6895],
         zoom: 11,
         });
-    
-        const bounds = [
-        [139.5603, 35.5233], 
-        [139.9086, 35.8185]  
-        ];
-        map.setMaxBounds(bounds);
+
+
+                // 現在地を取得して表示する関数
+    function showCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userCoords = [position.coords.longitude, position.coords.latitude];
+                console.log('現在地:', userCoords);
+
+                // 現在地にマーカーを追加
+                new maplibregl.Marker({ color: "blue" })
+                    .setLngLat(userCoords)
+                    .setPopup(new maplibregl.Popup().setText('現在地'))
+                    .addTo(map);
+
+                // 地図の中心を現在地に移動
+                map.setCenter(userCoords);
+                map.setZoom(14);  // 現在地にズーム
+            }, error => {
+                console.error('現在地を取得できませんでした:', error);
+            });
+        } else {
+            console.error('Geolocation APIがサポートされていません。');
+        }
+    }
+        // ページ読み込み時に現在地を表示
+    showCurrentLocation();
 
     // モデルコースデータの読み込み
     fetch('static/data/model_courses.json')
@@ -100,7 +121,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             map.fitBounds(bounds, { padding: 50 });
 
         } catch (error) {
-            console.error('ルート計算中にエラーが発生しました:', error);
+            console.error('ルート計算中にエラーが発生しました:');
+            console.error('エラーメッセージ:', error.message);
+            console.error('スタックトレース:', error.stack);
         }
     }
 
