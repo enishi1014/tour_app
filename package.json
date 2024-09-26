@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-location": "^3.658.1",
+    "@aws/amazon-location-utilities-auth-helper": "^1.0.7"
+  }
+}
