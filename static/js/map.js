@@ -76,6 +76,92 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+        // ハンバーガーメニューのトグル関数
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // 地図の初期化関数
+    async function initializeMap() {
+        const apiKey = "v1.public.eyJqdGkiOiIzODVjMGU5OS00NDI4LTQyZmMtOTY4ZS02OWVkYjI1Y2QxMWEifSYNGsUw2rs7pgeRhhpCtTFHWZw3xQpY4QxGIiAIoC6Uz62F6Y1YRhJ08z9B1HG7tdcLApNZqeK-mpXFGZJ3mcNliJRh_TeIvp5Ci8BZIr_qD9NJUXHSEoPqDTKAWD72QAMjvDl31aOhpcLI-0g8K-JmP8Zhb01fjblMmHVWFU-VtrEpJ__1JYLGAd0W42gC-0kJmWXucvfx4qR41-cxCN21zYUAUL6TBfvy1qRrKCkyJsP_qHIbl3otPSs1C08jHtOiac35ryRc91JrBfq2IB6maFJ6yAnL-WWRgJjYniA4zaOYhI-MtBrm18VahqbFGSriZtNpbHTdyReCZSQGym4.ZTA2OTdiZTItNzgyYy00YWI5LWFmODQtZjdkYmJkODNkMmFh";
+        const mapName = "mymap";
+        const region = "ap-southeast-2";
+
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: `https://maps.geo.${region}.amazonaws.com/maps/v0/maps/${mapName}/style-descriptor?key=${apiKey}`,
+            center: [139.767, 35.681],
+            zoom: 11,
+        });
+
+        return map;
+    }
+
+    // ルート表示ボタンのイベントリスナー
+    document.getElementById('load-route').addEventListener('click', async () => {
+        const routeId = document.getElementById('route-select').value;
+
+        try {
+            const response = await fetch('/calculate-route', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ route_id: routeId }),
+            });
+
+            const routeData = await response.json();
+
+            if (routeData.error) {
+                console.error("Error fetching route:", routeData.error);
+                return;
+            }
+
+            const map = await initializeMap();
+
+            const route = routeData.Legs[0].Geometry.LineString;
+            const geojson = {
+                type: "FeatureCollection",
+                features: [{
+                    type: "Feature",
+                    geometry: {
+                        type: "LineString",
+                        coordinates: route
+                    },
+                    properties: {}
+                }]
+            };
+
+            map.on('load', function () {
+                if (map.getSource("route-result")) {
+                    map.getSource("route-result").setData(geojson);
+                } else {
+                    map.addSource("route-result", {
+                        type: "geojson",
+                        data: geojson
+                    });
+                    map.addLayer({
+                        'id': "route-result",
+                        'type': 'line',
+                        'source': 'route-result',
+                        'layout': {
+                            'line-join': 'round',
+                            'line-cap': 'round'
+                        },
+                        'paint': {
+                            'line-color': '#FF0000',
+                            'line-width': 10,
+                            'line-opacity': 0.5
+                        }
+                    });
+                }
+            });
+        } catch (error) {
+            console.error("Error loading route:", error);
+        }
+    });
+
     let currentCourseLayerId = null;
 
 
